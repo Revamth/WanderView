@@ -1,23 +1,29 @@
 .main-header {
   width: 100%;
-  height: 4rem;
+  height: 4.5rem;
   display: flex;
   align-items: center;
   position: fixed;
   top: 0;
   left: 0;
-  background: #ff0055;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.26);
-  padding: 0 1rem;
-  z-index: 5;
+  background: linear-gradient(135deg, #ff2968 0%, #ff5e62 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0 1.5rem;
+  z-index: 10;
+  transition: box-shadow 0.3s ease;
+}
+
+.main-header:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 main {
-  margin-top: 5rem;
+  margin-top: 5.5rem;
 }
 
 @media (min-width: 768px) {
   .main-header {
     justify-content: space-between;
+    padding: 0 2rem;
   }
 }

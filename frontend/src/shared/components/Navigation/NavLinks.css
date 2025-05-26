@@ -11,31 +11,39 @@
 }
 
 .nav-links li {
-  margin: 1rem;
+  margin: 1.2rem 0;
 }
 
 .nav-links a {
   border: 1px solid transparent;
-  color: #292929;
+  color: #333333;
   text-decoration: none;
-  padding: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .nav-links a:hover,
 .nav-links a:active,
 .nav-links a.active {
   background: #f8df00;
-  border-color: #292929;
-  color: #292929;
+  border-color: #333333;
+  color: #333333;
+  transform: translateY(-2px);
 }
 
 .nav-links button {
   cursor: pointer;
-  border: 1px solid #292929;
-  color: #292929;
+  border: 1px solid #333333;
+  color: #333333;
   background: transparent;
-  padding: 0.5rem;
-  font: inherit;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .nav-links button:focus {
@@ -44,8 +52,9 @@
 
 .nav-links button:hover,
 .nav-links button:active {
-  background: #292929;
-  color: white;
+  background: #333333;
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 @media (min-width: 768px) {
@@ -54,23 +63,23 @@
   }
 
   .nav-links li {
-    margin: 0 0.5rem;
+    margin: 0 1rem;
   }
 
   .nav-links a {
-    color: white;
-    text-decoration: none;
+    color: #ffffff;
+    border: 1px solid transparent;
   }
 
   .nav-links button {
-    border: 1px solid white;
-    color: white;
+    border: 1px solid #ffffff;
+    color: #ffffff;
     background: transparent;
   }
-  
+
   .nav-links button:hover,
   .nav-links button:active {
     background: #f8df00;
-    color: #292929;
+    color: #333333;
   }
 }

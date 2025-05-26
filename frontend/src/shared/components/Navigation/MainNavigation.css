@@ -6,24 +6,39 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  margin-right: 2rem;
+  margin-right: 1.5rem;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.main-navigation__menu-btn:hover {
+  transform: scale(1.1);
 }
 
 .main-navigation__menu-btn span {
   display: block;
   width: 3rem;
-  height: 2.5px;
-  background: white;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: background 0.3s ease;
 }
 
 .main-navigation__title {
-  color: white;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .main-navigation__title a {
   text-decoration: none;
-  color: white;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.main-navigation__title a:hover {
+  color: #f8df00;
 }
 
 .main-navigation__header-nav {
@@ -40,6 +55,7 @@
   }
 
   .main-navigation__header-nav {
-    display: block;
+    display: flex;
+    align-items: center;
   }
 }
