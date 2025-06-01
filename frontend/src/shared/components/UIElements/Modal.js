@@ -2,9 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { CSSTransition } from "react-transition-group";
 
-import "./Backdrop";
-import "./Modal.css";
 import Backdrop from "./Backdrop";
+import "./Modal.css";
 
 const ModalOverlay = (props) => {
   const content = (
@@ -17,10 +16,10 @@ const ModalOverlay = (props) => {
           props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
         }
       >
-        <div className={`model__content ${props.contentClass}`}>
+        <div className={`modal__content ${props.contentClass}`}>
           {props.children}
         </div>
-        <footer className={`model__footer ${props.footerClass}`}>
+        <footer className={`modal__footer ${props.footerClass}`}>
           {props.footer}
         </footer>
       </form>
