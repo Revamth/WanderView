@@ -1,9 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const placesRoutes = require("./routes/places");
 const usersRoutes = require("./routes/users");
 const HttpError = require("./models/http-error");
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -24,4 +26,15 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error occurred!" });
 });
 
-app.listen(5000);
+mongoose
+  .connect(
+    "mongodb+srv://rvrevamth1:g9JNMUq4538kmRv7@cluster0.pumkhov.mongodb.net/WanderView"
+  )
+  .then(() => {
+    app.listen(5000, () => {
+      console.log("Server listening on port 5000");
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
