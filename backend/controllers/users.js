@@ -72,7 +72,10 @@ const login = async (req, res, next) => {
     );
   }
 
-  res.json({ messsage: "Logged in" });
+  res.json({
+    messsage: "Logged in",
+    user: existingUser.toObject({ getters: true }),
+  });
 };
 
 module.exports = {
