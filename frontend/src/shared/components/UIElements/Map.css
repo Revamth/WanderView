@@ -2,3 +2,13 @@
   width: 100%;
   height: 100%;
 }
+
+.leaflet-control-attribution {
+  font-size: 0.6rem;
+  opacity: 0.2;
+  transition: opacity 0.2s ease;
+}
+
+.leaflet-control-attribution:hover {
+  opacity: 1;
+}

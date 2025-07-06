@@ -1,40 +1,40 @@
-import React, { useRef, useEffect } from "react";
-import "ol/ol.css";
-import { Map as OlMap, View } from "ol";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import { fromLonLat } from "ol/proj";
+import React, { useEffect } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 import "./Map.css";
 
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 const Map = ({ center, zoom, style, className }) => {
-  const mapRef = useRef();
-
   useEffect(() => {
-    if (!mapRef.current) return;
-
-    const map = new OlMap({
-      target: mapRef.current,
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      view: new View({
-        center: fromLonLat([center.lng, center.lat]),
-        zoom: zoom,
-      }),
+    const map = L.map("map", {
+      center: [center.lat, center.lng],
+      zoom: zoom,
+      zoomControl: true,
     });
 
-    // Cleanup on unmount
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    L.marker([center.lat, center.lng]).addTo(map);
+
     return () => {
-      map.setTarget(null);
+      map.remove();
     };
   }, [center, zoom]);
 
-  return (
-    <div ref={mapRef} className={`map ${className || ""}`} style={style} />
-  );
+  return <div id="map" className={`map ${className || ""}`} style={style} />;
 };
 
 export default Map;
