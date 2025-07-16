@@ -1,4 +1,6 @@
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
@@ -33,17 +35,32 @@ const signup = async (req, res, next) => {
       );
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     const createdUser = new User({
       name,
       email,
       image: req.file.path,
-      password,
+      password: hashedPassword,
       places: [],
     });
 
     await createdUser.save();
-    res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+
+    const token = jwt.sign(
+      { userId: createdUser.id, email: createdUser.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.status(201).json({
+      userId: createdUser.id,
+      email: createdUser.email,
+      token: token,
+      message: "Signed up successfully!",
+    });
   } catch (err) {
+    console.error("Signup error:", err);
     return next(new HttpError("Signing up failed, please try again.", 500));
   }
 };
@@ -54,17 +71,37 @@ const login = async (req, res, next) => {
   try {
     const existingUser = await User.findOne({ email: email });
 
-    if (!existingUser || existingUser.password !== password) {
+    if (!existingUser) {
       return next(
         new HttpError("Invalid credentials, could not log you in.", 401)
       );
     }
 
+    const isValidPassword = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+
+    if (!isValidPassword) {
+      return next(
+        new HttpError("Invalid credentials, could not log you in.", 401)
+      );
+    }
+
+    const token = jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+
     res.json({
       message: "Logged in successfully!",
-      user: existingUser.toObject({ getters: true }),
+      userId: existingUser.id,
+      email: existingUser.email,
+      token: token,
     });
   } catch (err) {
+    console.error("Login error:", err);
     return next(
       new HttpError("Logging in failed, please try again later.", 500)
     );

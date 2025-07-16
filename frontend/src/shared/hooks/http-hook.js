@@ -9,21 +9,21 @@ export const useHttpClient = () => {
   const sendRequest = useCallback(
     async (url, method = "GET", body = null, headers = {}) => {
       setIsLoading(true);
-      const httpAbortControl = new AbortController();
-      activeHttpRequests.current.push(httpAbortControl);
+      const httpAbortCtrl = new AbortController();
+      activeHttpRequests.current.push(httpAbortCtrl);
 
       try {
         const response = await fetch(url, {
           method,
           body,
           headers,
-          signal: httpAbortControl.signal,
+          signal: httpAbortCtrl.signal,
         });
 
         const responseData = await response.json();
 
         activeHttpRequests.current = activeHttpRequests.current.filter(
-          (reqCtrl) => reqCtrl !== httpAbortControl
+          (reqCtrl) => reqCtrl !== httpAbortCtrl
         );
 
         if (!response.ok) {
@@ -33,7 +33,9 @@ export const useHttpClient = () => {
         setIsLoading(false);
         return responseData;
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
         setIsLoading(false);
         throw err;
       }

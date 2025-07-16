@@ -56,7 +56,9 @@ const UpdatePlace = () => {
           },
           true
         );
-      } catch (err) {}
+      } catch (err) {
+        // Error handled by useHttpClient, no need for empty catch
+      }
     };
     fetchPlace();
   }, [sendRequest, placeId, setFormData]);
@@ -73,6 +75,7 @@ const UpdatePlace = () => {
         }),
         {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         }
       );
       history.push("/" + auth.userId + "/places");

@@ -1,11 +1,11 @@
 const fs = require("fs");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error");
 const getCoordsAndAddress = require("../util/location");
 const Place = require("../models/places");
 const User = require("../models/user");
-const mongoose = require("mongoose");
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -32,7 +32,6 @@ const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
   let places;
   try {
-    // Using find() returns an array, even if empty, so no need for !places check
     places = await Place.find({ creator: userId });
   } catch (err) {
     return next(
@@ -55,11 +54,12 @@ const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data", 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
-  const { title, description, creator, address } = req.body;
+  const { title, description, address } = req.body;
+  const creator = req.userData.userId;
 
   let coordinates;
   try {
@@ -88,16 +88,21 @@ const createPlace = async (req, res, next) => {
     return next(new HttpError("Could not find user for provided id.", 404));
   }
 
+  const sess = await mongoose.startSession();
   try {
-    const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdPlace.save({ session: sess });
     user.places.push(createdPlace);
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
+    await sess.abortTransaction();
+    console.error("Transaction failed:", err);
     return next(new HttpError("Creating place failed, please try again.", 500));
+  } finally {
+    sess.endSession();
   }
+
   res.status(201).json({ place: createdPlace.toObject({ getters: true }) });
 };
 
@@ -105,7 +110,7 @@ const updatePlaceById = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data", 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -123,6 +128,12 @@ const updatePlaceById = async (req, res, next) => {
 
   if (!place) {
     return next(new HttpError("Could not find a place for this id.", 404));
+  }
+
+  if (place.creator.toString() !== req.userData.userId) {
+    return next(
+      new HttpError("You are not authorized to edit this place.", 403)
+    );
   }
 
   place.title = title;
@@ -155,19 +166,29 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError("Could not find place for this id.", 404));
   }
 
+  if (place.creator.id !== req.userData.userId) {
+    return next(
+      new HttpError("You are not authorized to delete this place.", 403)
+    );
+  }
+
   const imagePath = place.image;
 
+  const sess = await mongoose.startSession();
   try {
-    const sess = await mongoose.startSession();
     sess.startTransaction();
     await place.deleteOne({ session: sess });
     place.creator.places.pull(place);
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
+    await sess.abortTransaction();
+    console.error("Transaction failed:", err);
     return next(
       new HttpError("Something went wrong, could not delete place.", 500)
     );
+  } finally {
+    sess.endSession();
   }
 
   fs.unlink(imagePath, (err) => {

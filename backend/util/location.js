@@ -1,5 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
+
 const API_KEY = process.env.LOCATIONIQ_API_KEY;
 
 const getCoordsAndAddress = async (title, address) => {
@@ -24,8 +25,10 @@ const getCoordsAndAddress = async (title, address) => {
       address: result.display_name,
     };
   } catch (err) {
-    console.error("LocationIQ Error:", err.message);
-    throw new Error("Failed to fetch coordinates and address from address.");
+    console.error("LocationIQ API Error:", err.message);
+    throw new Error(
+      "Failed to fetch coordinates and address. Please check the address."
+    );
   }
 };
 

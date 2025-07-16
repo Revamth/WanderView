@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const fs = require("fs");
 const path = require("path");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -37,16 +38,15 @@ app.use((error, req, res, next) => {
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
       if (err) {
-        console.error("Failed to delete file:", err);
+        console.error("Failed to delete file after error:", err);
       }
     });
   }
   if (res.headersSent) {
     return next(error);
   }
-  res
-    .status(error.code || 500)
-    .json({ message: error.message || "An unknown error occurred!" });
+  res.status(error.code || 500);
+  res.json({ message: error.message || "An unknown error occurred!" });
 });
 
 mongoose
