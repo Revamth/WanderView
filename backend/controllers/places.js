@@ -55,11 +55,11 @@ const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data", 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
-  const { title, description, creator, address } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
   try {
@@ -74,12 +74,12 @@ const createPlace = async (req, res, next) => {
     address,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId,
   });
 
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     return next(new HttpError("Creating place failed, please try again.", 500));
   }
@@ -98,14 +98,14 @@ const createPlace = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError("Creating place failed, please try again.", 500));
   }
-  res.status(201).json({ place: createdPlace.toObject({ getters: true }) });
+  res.status(201).json({ place: createdPlace });
 };
 
-const updatePlaceById = async (req, res, next) => {
+const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError("Invalid inputs passed, please check your data", 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -121,8 +121,10 @@ const updatePlaceById = async (req, res, next) => {
     );
   }
 
-  if (!place) {
-    return next(new HttpError("Could not find a place for this id.", 404));
+  if (place.creator.toString() !== req.userData.userId) {
+    return next(
+      new HttpError("You are not allowed to update this place.", 401)
+    );
   }
 
   place.title = title;
@@ -155,26 +157,33 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError("Could not find place for this id.", 404));
   }
 
+  if (place.creator.id != req.userData.userId) {
+    return next(
+      new HttpError("You are not allowed to deleted this place", 401)
+    );
+  }
   const imagePath = place.image;
 
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
+
     await place.deleteOne({ session: sess });
     place.creator.places.pull(place);
     await place.creator.save({ session: sess });
+
     await sess.commitTransaction();
+
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.error("Failed to delete image file:", err);
+      }
+    });
   } catch (err) {
     return next(
       new HttpError("Something went wrong, could not delete place.", 500)
     );
   }
-
-  fs.unlink(imagePath, (err) => {
-    if (err) {
-      console.error("Failed to delete image file:", err);
-    }
-  });
 
   res.status(200).json({ message: "Deleted place." });
 };
@@ -183,6 +192,6 @@ module.exports = {
   getPlaceById,
   getPlacesByUserId,
   createPlace,
-  updatePlaceById,
+  updatePlace,
   deletePlace,
 };
