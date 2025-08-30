@@ -43,13 +43,6 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-  if (req.file) {
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-        console.error("Failed to delete file:", err);
-      }
-    });
-  }
   if (res.headersSent) {
     return next(error);
   }
