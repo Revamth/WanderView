@@ -53,8 +53,14 @@ app.use((error, req, res, next) => {
   if (res.headersSent) {
     return next(error);
   }
+
+  let statusCode = 500;
+  if (typeof error.code === "number") {
+    statusCode = error.code;
+  }
+
   res
-    .status(error.code || 500)
+    .status(statusCode)
     .json({ message: error.message || "An unknown error occurred!" });
 });
 
