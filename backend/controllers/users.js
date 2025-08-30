@@ -1,15 +1,11 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const streamifier = require("streamifier");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
 const cloudinary = require("../util/cloudinary");
-
-const toDataURI = (file) => {
-  const b64 = Buffer.from(file.buffer).toString("base64");
-  return `data:${file.mimetype};base64,${b64}`;
-};
 
 const getUsers = async (req, res, next) => {
   try {
@@ -20,6 +16,19 @@ const getUsers = async (req, res, next) => {
       new HttpError("Fetching users failed, please try again later.", 500)
     );
   }
+};
+
+const uploadToCloudinary = (fileBuffer, folder = "wanderview/users") => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+  });
 };
 
 const signup = async (req, res, next) => {
@@ -59,12 +68,11 @@ const signup = async (req, res, next) => {
 
   if (req.file) {
     try {
-      const uploadRes = await cloudinary.uploader.upload(toDataURI(req.file), {
-        folder: process.env.CLOUDINARY_FOLDER || "wanderview/users",
-      });
+      const uploadRes = await uploadToCloudinary(req.file.buffer);
       imageUrl = uploadRes.secure_url;
       imagePublicId = uploadRes.public_id;
     } catch (err) {
+      console.error("Cloudinary Upload Error:", err);
       return next(new HttpError("Profile image upload failed.", 500));
     }
   }
