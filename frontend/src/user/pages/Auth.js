@@ -8,6 +8,7 @@ import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import {
   VALIDATOR_EMAIL,
+  VALIDATOR_MAXLENGTH,
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
@@ -114,9 +115,10 @@ const Auth = () => {
               id="name"
               type="text"
               label="Your Name"
-              validators={[VALIDATOR_REQUIRE()]}
-              errorText="Please enter a name."
+              validators={[VALIDATOR_REQUIRE(), VALIDATOR_MAXLENGTH(15)]}
+              errorText="Please enter a name(max of 15 characters)."
               onInput={inputHandler}
+              maxLength={15}
             />
           )}
           {!isLoginMode && (
