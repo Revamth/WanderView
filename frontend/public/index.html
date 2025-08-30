@@ -1,54 +1,68 @@
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Primary Meta Tags -->
-  <title>WanderView 🌍 | Explore & Share Travel Experiences</title>
-  <meta
-    name="description"
-    content="WanderView lets you explore, share, and discover amazing travel destinations with maps, photos, and stories."
-  />
-  <meta name="theme-color" content="#0a3d62" />
+    <!-- Primary Meta Tags -->
+    <title>WanderView 🌍 | Explore & Share Travel Experiences</title>
+    <meta
+      name="description"
+      content="WanderView lets you explore, share, and discover amazing travel destinations with maps, photos, and stories."
+    />
+    <meta name="theme-color" content="#0a3d62" />
 
-  <!-- Apple / PWA Support -->
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/" />
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- Apple / PWA Support -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-  <!-- Open Graph / Social Preview -->
-  <meta property="og:title" content="WanderView 🌍 | Travel & Explore" />
-  <meta
-    property="og:description"
-    content="Discover breathtaking destinations, share your journeys, and explore the world with WanderView."
-  />
-  <meta property="og:image" content="%PUBLIC_URL%/preview.png" />
-  <meta property="og:url" content="https://your-deployment-url.com" />
-  <meta name="twitter:card" content="summary_large_image" />
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:title" content="WanderView 🌍 | Travel & Explore" />
+    <meta
+      property="og:description"
+      content="Discover breathtaking destinations, share your journeys, and explore the world with WanderView."
+    />
+    <meta property="og:image" content="%PUBLIC_URL%/preview.png" />
+    <meta property="og:url" content="https://your-deployment-url.com" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- OpenLayers Map CSS & JS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css"
-    type="text/css"
-  />
-  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+    <!-- OpenLayers Map CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
 
-  <!-- Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Roboto", sans-serif;
-      background-color: #f9f9f9;
-    }
-  </style>
-</head>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+</html>
+<body>
+    <noscript>You need to enable JavaScript to run WanderView.</noscript>
+    <!-- React Portals -->
+    <div id="backdrop-hook"></div>
+    <div id="modal-hook"></div>
+    <div id="drawer-hook"></div>
+
+    <!-- Root App Mount -->
+    <div id="root"></div>
+  </body>
+</html>
