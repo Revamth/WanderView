@@ -1,21 +1,22 @@
 const express = require("express");
 const { check } = require("express-validator");
+const multer = require("multer");
 
 const placesControllers = require("../controllers/places");
-const fileUpload = require("../middleware/file-upload");
 const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
-router.get("/:pid", placesControllers.getPlaceById);
+const upload = multer({ storage: multer.memoryStorage() });
 
+router.get("/:pid", placesControllers.getPlaceById);
 router.get("/user/:uid", placesControllers.getPlacesByUserId);
 
 router.use(checkAuth);
 
 router.post(
   "/",
-  fileUpload.single("image"),
+  upload.single("image"),
   [
     check("title").notEmpty(),
     check("description").isLength({ min: 5 }),
@@ -26,6 +27,7 @@ router.post(
 
 router.put(
   "/:pid",
+  upload.single("image"),
   [check("title").notEmpty(), check("description").isLength({ min: 5 })],
   placesControllers.updatePlace
 );

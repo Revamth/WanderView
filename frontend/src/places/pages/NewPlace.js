@@ -32,7 +32,7 @@ const NewPlace = () => {
         value: "",
         isValid: false,
       },
-      image: {
+      imageUrl: {
         value: null,
         isValid: false,
       },

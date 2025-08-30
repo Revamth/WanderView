@@ -4,6 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
+const cloudinary = require("../util/cloudinary");
+
+const toDataURI = (file) => {
+  const b64 = Buffer.from(file.buffer).toString("base64");
+  return `data:${file.mimetype};base64,${b64}`;
+};
 
 const getUsers = async (req, res, next) => {
   try {
@@ -27,15 +33,12 @@ const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   let existingUser;
-
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
+    return next(
+      new HttpError("Signing up failed, please try again later.", 500)
     );
-    return next(error);
   }
 
   if (existingUser) {
@@ -51,13 +54,30 @@ const signup = async (req, res, next) => {
     return next(new HttpError("Could not create user, please try again.", 500));
   }
 
+  let imageUrl = null;
+  let imagePublicId = null;
+
+  if (req.file) {
+    try {
+      const uploadRes = await cloudinary.uploader.upload(toDataURI(req.file), {
+        folder: process.env.CLOUDINARY_FOLDER || "wanderview/users",
+      });
+      imageUrl = uploadRes.secure_url;
+      imagePublicId = uploadRes.public_id;
+    } catch (err) {
+      return next(new HttpError("Profile image upload failed.", 500));
+    }
+  }
+
   const createdUser = new User({
     name,
     email,
-    image: req.file.path,
+    imageUrl,
+    imagePublicId,
     password: hashedPassword,
     places: [],
   });
+
   try {
     await createdUser.save();
   } catch (err) {
@@ -75,13 +95,17 @@ const signup = async (req, res, next) => {
     return next(new HttpError("Signing up failed, please try again.", 500));
   }
 
-  res
-    .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
+  res.status(201).json({
+    userId: createdUser.id,
+    email: createdUser.email,
+    image: createdUser.imageUrl,
+    token: token,
+  });
 };
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
+
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -108,6 +132,7 @@ const login = async (req, res, next) => {
     res.json({
       userId: existingUser.id,
       email: existingUser.email,
+      image: existingUser.imageUrl,
       token: token,
     });
   } catch (err) {

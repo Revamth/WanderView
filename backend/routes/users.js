@@ -1,16 +1,18 @@
 const express = require("express");
 const { check } = require("express-validator");
+const multer = require("multer");
 
 const usersControllers = require("../controllers/users");
-const fileUpload = require("../middleware/file-upload");
 
 const router = express.Router();
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/", usersControllers.getUsers);
 
 router.post(
   "/signup",
-  fileUpload.single("image"),
+  upload.single("image"),
   [
     check("name").notEmpty(),
     check("email").normalizeEmail().isEmail(),

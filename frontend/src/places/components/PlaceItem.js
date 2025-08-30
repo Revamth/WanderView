@@ -17,7 +17,6 @@ const PlaceItem = (props) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const openMapHandler = () => setShowMap(true);
-
   const closeMapHandler = () => setShowMap(false);
 
   const showDeleteWarningHandler = () => {
@@ -84,7 +83,7 @@ const PlaceItem = (props) => {
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
             <img
-              src={process.env.REACT_APP_ASSET_URL + `/${props.image}`}
+              src={props.image || "https://via.placeholder.com/300"}
               alt={props.title}
             />
           </div>

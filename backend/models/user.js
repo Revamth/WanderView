@@ -11,7 +11,8 @@ const userSchema = new Schema({
     required: true,
     minlength: 6,
   },
-  image: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+  imagePublicId: { type: String, required: true },
   places: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }],
 });
 
