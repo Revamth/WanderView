@@ -84,30 +84,32 @@ const PlaceItem = (props) => {
       <li className="place-item">
         <Card className="place-item__content">
           {isLoading && <LoadingSpinner asOverlay />}
+          {/* This is the single container for info and actions */}
+          <div className="place-item__left-content">
+            <div className="place-item__info">
+              <h2>{props.title}</h2>
+              <h3>{props.address}</h3>
+              <p>{props.description}</p>
+            </div>
+            <div className="place-item__actions">
+              <Button inverse onClick={openMapHandler}>
+                VIEW ON MAP
+              </Button>
+              {auth.userId === props.creatorId && (
+                <Button to={`/places/${props.id}`}>EDIT</Button>
+              )}
+              {auth.userId === props.creatorId && (
+                <Button danger onClick={showDeleteWarningHandler}>
+                  DELETE
+                </Button>
+              )}
+            </div>
+          </div>
           <div className="place-item__image">
             <img
               src={props.image || "https://via.placeholder.com/300"}
               alt={props.title}
             />
-          </div>
-          <div className="place-item__info">
-            <h2>{props.title}</h2>
-            <h3>{props.address}</h3>
-            <p>{props.description}</p>
-          </div>
-          <div className="place-item__actions">
-            <Button inverse onClick={openMapHandler}>
-              VIEW ON MAP
-            </Button>
-            {auth.userId === props.creatorId && (
-              <Button to={`/places/${props.id}`}>EDIT</Button>
-            )}
-
-            {auth.userId === props.creatorId && (
-              <Button danger onClick={showDeleteWarningHandler}>
-                DELETE
-              </Button>
-            )}
           </div>
         </Card>
       </li>

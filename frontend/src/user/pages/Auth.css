@@ -1,15 +1,76 @@
 .authentication__header {
-  color: white;
+  color: var(--text-primary);
   text-align: center;
+  margin-bottom: 1rem;
+}
+
+.authentication__header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+}
+
+.authentication__header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
 }
 
 .authentication {
   width: 90%;
-  max-width: 25rem;
-  margin: 7rem auto;
+  max-width: 450px;
+  margin: 0rem auto 2rem;
   text-align: center;
 }
 
 .authentication form {
   margin-bottom: 1rem;
+  background: var(--surface-color);
+  padding: 1rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.authentication form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.authentication .form-control {
+  margin: 1.5rem 0;
+}
+
+.authentication .button {
+  width: 100%;
+  margin: 1.5rem 0 0 0;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .authentication {
+    margin: 0rem auto 2rem;
+  }
+
+  .authentication form {
+    padding: 1.5rem;
+  }
+
+  .authentication__header h1 {
+    font-size: 2.75rem;
+  }
 }

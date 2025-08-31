@@ -4,6 +4,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.avatar::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.avatar:hover::before {
+  opacity: 1;
 }
 
 .avatar img {
@@ -12,11 +28,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 2px solid #ffffff;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  border: 3px solid var(--surface-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
 }
 
 .avatar img:hover {
-  transform: scale(1.05) rotate(5deg);
-  border-color: #ffd900;
+  transform: scale(1.08);
+  border-color: transparent;
+  box-shadow: var(--shadow-lg);
 }

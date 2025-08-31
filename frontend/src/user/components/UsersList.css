@@ -1,11 +1,26 @@
 .users-list {
   list-style: none;
   margin: 0 auto;
-  padding: 1rem;
-  width: 90%;
-  max-width: 60rem;
-  display: flex;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .users-list {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .users-list {
+    gap: 2.5rem;
+    padding: 4rem 3rem;
+  }
 }

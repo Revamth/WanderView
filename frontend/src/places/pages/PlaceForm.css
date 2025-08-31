@@ -1,10 +1,29 @@
 .place-form {
   list-style: none;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 2.5rem;
   width: 90%;
-  max-width: 40rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 6px;
-  background: white;
+  max-width: 640px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.place-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--primary-gradient);
+}
+
+@media (min-width: 768px) {
+  .place-form {
+    padding: 3.5rem;
+  }
 }

@@ -1,19 +1,52 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+/* --- index.css --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #6a85e6 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --accent-color: #6a85e6;
+  --accent-hover: #5b71d4;
+  --surface-color: #ffffff;
+  --surface-secondary: #f8fafc;
+  --surface-tertiary: #f1f5f9;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
 
 * {
   box-sizing: border-box;
 }
 
 html {
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  font-variation-settings: "opsz" 32;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: linear-gradient(to right, #4d4d4d, #3a3a3a);
-  /* background: #4d4d4d; */
-  color: #333;
+  background: #f4f7f9;
+  color: var(--text-primary);
   line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 .slide-in-left-enter {
@@ -24,7 +57,7 @@ body {
 .slide-in-left-enter-active {
   transform: translateX(0);
   opacity: 1;
-  transition: all 300ms ease-in-out;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide-in-left-exit {
@@ -35,7 +68,7 @@ body {
 .slide-in-left-exit-active {
   transform: translateX(-100%);
   opacity: 0;
-  transition: all 300ms ease-in-out;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .center {
@@ -43,5 +76,22 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 1vh;
+  min-height: 50vh;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
