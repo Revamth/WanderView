@@ -52,7 +52,6 @@
   font-weight: 600;
 }
 
-/* Desktop styles */
 @media (min-width: 768px) {
   .nav-links {
     flex-direction: row;

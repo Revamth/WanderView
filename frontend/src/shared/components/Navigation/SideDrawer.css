@@ -26,7 +26,6 @@
   padding: 1rem 0;
 }
 
-/* Custom scrollbar for sidebar */
 .side-drawer::-webkit-scrollbar {
   width: 6px;
 }

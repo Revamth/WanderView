@@ -48,6 +48,7 @@ const PlaceItem = (props) => {
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
+
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -57,9 +58,10 @@ const PlaceItem = (props) => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <Map center={props.coordinates} zoom={16} />
+          <Map center={props.coordinates} zoom={16} show={showMap} />
         </div>
       </Modal>
+
       <Modal
         show={showConfirmModal}
         onCancel={cancelDeleteHandler}
@@ -81,10 +83,10 @@ const PlaceItem = (props) => {
           can't be undone thereafter.
         </p>
       </Modal>
+
       <li className="place-item">
         <Card className="place-item__content">
           {isLoading && <LoadingSpinner asOverlay />}
-          {/* This is the single container for info and actions */}
           <div className="place-item__left-content">
             <div className="place-item__info">
               <h2>{props.title}</h2>
