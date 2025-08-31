@@ -9,7 +9,7 @@ const MIME_TYPE_MAP = {
 
 const fileUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 500000 },
+  limits: { fileSize: 5000000 },
   fileFilter: (req, file, cb) => {
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
     cb(isValid ? null : new Error("Invalid mime type!"), isValid);
