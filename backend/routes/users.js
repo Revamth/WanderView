@@ -1,3 +1,12 @@
+/**
+ * routes/users.js — Express router for /api/users endpoints.
+ *
+ * Wires user-facing endpoints (list users, signup, login) to the users
+ * controller. Signup runs the shared file-upload middleware plus input
+ * validation; none of these routes are behind checkAuth (login/signup must be
+ * reachable without a token).
+ */
+
 const express = require("express");
 const { check } = require("express-validator");
 
