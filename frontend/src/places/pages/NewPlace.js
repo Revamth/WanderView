@@ -1,3 +1,11 @@
+/**
+ * NewPlace.js — the "Add a place" form page (authenticated users only).
+ *
+ * Collects a title, description, address and image, packages them as multipart
+ * FormData (needed for the image file), and POSTs to /places with the user's
+ * bearer token. On success it redirects home. The new place is attributed to
+ * the logged-in user server-side via that token.
+ */
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -45,6 +53,7 @@ const NewPlace = () => {
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
     try {
+      // Use FormData (not JSON) because the request includes the image file.
       const formData = new FormData();
       formData.append("title", formState.inputs.title.value);
       formData.append("description", formState.inputs.description.value);
@@ -55,9 +64,12 @@ const NewPlace = () => {
         "POST",
         formData,
         {
+          // Bearer token proves who's creating the place; the backend ties the
+          // new place to this user and rejects unauthenticated requests.
           Authorization: "Bearer " + auth.token,
         }
       );
+      // On success, send the user back to the home page.
       history.push("/");
     } catch (err) {}
   };

@@ -1,3 +1,11 @@
+/**
+ * UserPlaces.js — page showing every place belonging to one user.
+ *
+ * Reads :userId from the URL, fetches that user's places, and renders them via
+ * PlaceList. It also owns the delete callback: when a child PlaceItem deletes a
+ * place, this page removes it from local state optimistically so the UI updates
+ * instantly without re-fetching the whole list.
+ */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,6 +20,8 @@ const UserPlaces = () => {
 
   const userId = useParams().userId;
 
+  // Fetch this user's places. Re-runs if the userId in the URL changes, so
+  // navigating from one user's places to another's loads the right data.
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
@@ -24,6 +34,9 @@ const UserPlaces = () => {
     fetchPlaces();
   }, [sendRequest, userId]);
 
+  // OPTIMISTIC update: after a child confirms a delete, drop that place from
+  // local state immediately instead of re-fetching the list. The backend delete
+  // already happened in PlaceItem, so the UI just mirrors the new reality.
   const placeDeletedHandler = (deletedPlaceId) => {
     setLoadedPlaces((prevPlaces) =>
       prevPlaces.filter((place) => place.id !== deletedPlaceId)
