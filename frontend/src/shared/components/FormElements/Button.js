@@ -1,8 +1,17 @@
+/**
+ * Button — polymorphic, consistently-styled clickable element.
+ *
+ * Renders one of three elements based on props so callers get the right semantics
+ * for free: an external link (<a>) when `href` is set, an in-app react-router
+ * <Link> when `to` is set, or a plain <button> otherwise. All three share the same
+ * CSS class string, with optional size/inverse/danger style modifiers.
+ */
 import { Link } from "react-router-dom";
 
 import "./Button.css";
 
 const Button = (props) => {
+  // `href` => external navigation, so render a real anchor tag.
   if (props.href) {
     return (
       <a
@@ -15,6 +24,7 @@ const Button = (props) => {
       </a>
     );
   }
+  // `to` => client-side route change, so use react-router's <Link> (no full reload).
   if (props.to) {
     return (
       <Link
@@ -28,6 +38,7 @@ const Button = (props) => {
       </Link>
     );
   }
+  // Default case: a true <button> that supports onClick, type and disabled.
   return (
     <button
       className={`button button--${props.size || "default"} ${
