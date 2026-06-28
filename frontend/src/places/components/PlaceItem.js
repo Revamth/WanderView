@@ -1,3 +1,11 @@
+/**
+ * PlaceItem.js — a single place card with map view and owner controls.
+ *
+ * Displays one place and offers "View on map", "Edit" and "Delete". The map and
+ * delete confirmation are shown in modals. EDIT/DELETE only appear to the place's
+ * owner (client-side ownership check). Delete hits the backend, then notifies the
+ * parent via props.onDelete so the list can update.
+ */
 import React, { useState, useContext } from "react";
 
 import Card from "../../shared/components/UIElements/Card";
@@ -8,6 +16,8 @@ import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import "./PlaceItem.css";
 
+// Lazy-load Modal and Map: they're only needed when the user opens a modal,
+// so code-splitting them keeps the initial bundle (and list render) lighter.
 const Modal = React.lazy(() =>
   import("../../shared/components/UIElements/Modal")
 );
@@ -16,6 +26,8 @@ const Map = React.lazy(() => import("../../shared/components/UIElements/Map"));
 const PlaceItem = (props) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
+  // Two independent modals: one toggles the map view, the other the
+  // delete-confirmation dialog.
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -30,9 +42,11 @@ const PlaceItem = (props) => {
     setShowConfirmModal(false);
   };
 
+  // Runs when the user confirms deletion in the dialog.
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false);
     try {
+      // Authenticated DELETE to the backend (bearer token proves ownership).
       await sendRequest(
         process.env.REACT_APP_BACKEND_URL + `/places/${props.id}`,
         "DELETE",
@@ -41,6 +55,7 @@ const PlaceItem = (props) => {
           Authorization: "Bearer " + auth.token,
         }
       );
+      // Tell the parent (UserPlaces) to drop this place from its list state.
       props.onDelete(props.id);
     } catch (err) {}
   };
@@ -49,6 +64,7 @@ const PlaceItem = (props) => {
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
 
+      {/* Modal #1: map view, showing the place's location. */}
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -62,6 +78,7 @@ const PlaceItem = (props) => {
         </div>
       </Modal>
 
+      {/* Modal #2: delete confirmation, with Cancel and Delete actions. */}
       <Modal
         show={showConfirmModal}
         onCancel={cancelDeleteHandler}
@@ -97,6 +114,9 @@ const PlaceItem = (props) => {
               <Button inverse onClick={openMapHandler}>
                 VIEW ON MAP
               </Button>
+              {/* Client-side ownership gate: only the creator sees EDIT/DELETE.
+                  This is a UX convenience only — the backend independently
+                  re-checks ownership on the actual edit/delete requests. */}
               {auth.userId === props.creatorId && (
                 <Button to={`/places/${props.id}`}>EDIT</Button>
               )}
