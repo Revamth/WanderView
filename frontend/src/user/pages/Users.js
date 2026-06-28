@@ -1,3 +1,10 @@
+/**
+ * Users.js — the app's home/landing page listing every WanderView user.
+ *
+ * Fetches all users from the backend on mount and hands them to UsersList for
+ * rendering. Shows a spinner while loading and surfaces request errors via the
+ * shared ErrorModal. Each rendered user links through to that user's places.
+ */
 import React, { useEffect, useState } from "react";
 
 import UsersList from "../components/UsersList";
@@ -9,6 +16,8 @@ const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedUsers, setLoadedUsers] = useState();
 
+  // Fetch all users once on mount (GET /users defaults to a GET request).
+  // Depending on the memoized sendRequest means this runs effectively only once.
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -30,6 +39,7 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
+      {/* Only render the list once loading has finished and data has arrived. */}
       {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
     </React.Fragment>
   );

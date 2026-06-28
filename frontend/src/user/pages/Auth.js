@@ -1,3 +1,11 @@
+/**
+ * Auth.js — login/signup page for WanderView.
+ *
+ * A single form that flips between Login and Signup modes. It collects
+ * credentials, talks to the backend /users/login or /users/signup endpoint,
+ * and on success stores the returned token + userId via AuthContext, which
+ * unlocks the authenticated parts of the app (creating/editing/deleting places).
+ */
 import React, { useState, useContext } from "react";
 
 import Card from "../../shared/components/UIElements/Card";
@@ -19,6 +27,8 @@ import "./Auth.css";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
+  // isLoginMode drives the whole UI: true = Login form, false = Signup form.
+  // Toggling it shows/hides the name + image inputs and changes the submit target.
   const [isLoginMode, setIsLoginMode] = useState(true);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -36,8 +46,12 @@ const Auth = () => {
     false
   );
 
+  // switchModeHandler dynamically reshapes the form's field set as we flip modes,
+  // because Login and Signup don't share the same inputs.
   const switchModeHandler = () => {
     if (!isLoginMode) {
+      // Leaving Signup -> Login: drop the name + image fields so they no longer
+      // count toward validity. Overall form is valid if email + password are valid.
       setFormData(
         {
           ...formState.inputs,
@@ -47,6 +61,8 @@ const Auth = () => {
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     } else {
+      // Leaving Login -> Signup: (re)add the name + image fields as empty/invalid,
+      // so the form is invalid until the user fills them in.
       setFormData(
         {
           ...formState.inputs,
@@ -69,6 +85,7 @@ const Auth = () => {
     event.preventDefault();
 
     if (isLoginMode) {
+      // Login carries only text fields, so we send plain JSON.
       try {
         const responseData = await sendRequest(
           process.env.REACT_APP_BACKEND_URL + "/users/login",
@@ -81,9 +98,13 @@ const Auth = () => {
             "Content-Type": "application/json",
           }
         );
+        // On success, persist token + userId in AuthContext -> app is now logged in.
         auth.login(responseData.userId, responseData.token);
       } catch (err) {}
     } else {
+      // Signup includes an avatar file, which JSON can't carry, so we use
+      // multipart FormData instead. (No Content-Type header is set here on purpose:
+      // the browser auto-adds the multipart boundary.)
       try {
         const formData = new FormData();
         formData.append("email", formState.inputs.email.value);
@@ -96,6 +117,7 @@ const Auth = () => {
           formData
         );
 
+        // Same as login: a successful signup logs the user straight in.
         auth.login(responseData.userId, responseData.token);
       } catch (err) {}
     }
@@ -138,6 +160,10 @@ const Auth = () => {
             errorText="Please enter a valid email address."
             onInput={inputHandler}
           />
+          {/* NOTE: this frontend password validator requires MINLENGTH(5), but the
+              backend enforces a minimum of 6 characters. This is a frontend/backend
+              validation mismatch — a 5-char password passes here yet is rejected by
+              the API on signup. Keep these in sync to avoid confusing errors. */}
           <Input
             element="input"
             id="password"
